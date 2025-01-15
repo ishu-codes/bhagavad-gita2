@@ -22,7 +22,6 @@ export default function LanguageSelect() {
   const { pathname } = useLocation();
 
   const changeLang = (newLangCode: string = "") => {
-    console.log("New lang code:", newLangCode);
     const validNewLang = i18n.locales.find(
       (locale) => locale.code === newLangCode
     );

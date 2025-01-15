@@ -1,8 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Chapter, Chapters, Home, Navbar } from "./components";
-import "./App.css";
 
-function App() {
+export default function App() {
   return (
     <main className="w-full h-screen bg-background text-foreground">
       <Routes>
@@ -19,5 +18,3 @@ function App() {
     </main>
   );
 }
-
-export default App;

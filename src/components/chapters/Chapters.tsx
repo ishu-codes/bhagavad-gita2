@@ -37,7 +37,7 @@ export default function Chapters() {
               active={chapter.id === currentChId}
               title={chapter.name}
               subtitle={chapter.desc}
-              numbering={getLangNum(chapter.id, dict.numerals)}
+              numbering={getLangNum(chapter.id, dict?.numerals)}
               key={index}
             />
           ))}

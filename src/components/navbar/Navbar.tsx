@@ -14,7 +14,6 @@ export default function Navbar() {
     let fontLink: HTMLLinkElement | null = null;
 
     const updateDictionaryAndFont = async () => {
-      console.log("updating dict & font!");
       const dictionary = await getDictionary(getLocale(lang));
       setDict(dictionary);
 
@@ -28,7 +27,6 @@ export default function Navbar() {
 
       fontLink.onload = () => {
         document.head.appendChild(fontLink!);
-        console.log("Font loaded:", dictionary.font.url);
       };
 
       fontLink.onerror = () => {
@@ -37,8 +35,6 @@ export default function Navbar() {
     };
 
     updateDictionaryAndFont();
-
-    console.log("Language changed:", lang);
 
     return () => {
       if (fontLink && document.head.contains(fontLink)) {
