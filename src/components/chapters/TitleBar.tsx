@@ -20,7 +20,7 @@ export default function TitleBar(
   const navigate = useNavigate();
   return (
     <div
-      className={`w-full flex items-center justify-between border-b-2 border-border ${props.className}`}
+      className={`w-full flex items-center justify-between pb-2 border-b-2 border-border ${props.className}`}
     >
       <button
         // variant={"ghost"}
