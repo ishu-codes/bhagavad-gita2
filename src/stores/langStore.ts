@@ -9,7 +9,7 @@ interface LangStore {
 
 const useLangStore = create(
   persist<LangStore>(
-    (set, get) => ({
+    (set) => ({
       currentLang: i18n.defaultLocale,
       setCurrentLang: (newLang: Locale) =>
         set({

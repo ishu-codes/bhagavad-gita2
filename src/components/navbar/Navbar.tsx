@@ -67,7 +67,7 @@ export default function Navbar() {
             />
           </Link>
         </figure>
-        <SearchBar searchHere={dict.search_here} />
+        <SearchBar searchHere={dict?.search_here} />
         <div className="hidden md:flex items-center space-x-4 gap-4">
           <LanguageSelect />
           <Theme />
