@@ -4,10 +4,14 @@ export type PhraseInterface = {
   group: string;
 };
 
-export type GroupInterface = {
+export type GroupOnlyInterface = {
   code: string;
   translation: string;
   meanings: { [key: string]: string }[];
+};
+
+export type GroupInterface = GroupOnlyInterface & {
+  phrases: PhraseInterface[];
 };
 
 export type SectionOnlyInterface = {
@@ -28,4 +32,16 @@ export type ChapterOnlyInterface = {
 
 export type ChapterInterface = ChapterOnlyInterface & {
   sections: SectionInterface[];
+};
+
+export type Dict = {
+  chapter: string;
+  search_here: string;
+  font: {
+    url: string;
+    family: string;
+  };
+  numerals: string[];
+  credits: string;
+  verse_meaning: string;
 };

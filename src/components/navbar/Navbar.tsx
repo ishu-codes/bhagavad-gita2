@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link, Outlet, useParams } from "react-router-dom";
+import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
 import { getLocale } from "@/functions/chapter";
 import { getDictionary } from "@/get-dictionary";
 import LanguageSelect from "./LanguageSelect";
 import SearchBar from "./SearchBar";
 import Theme from "./Theme";
+import { Dict } from "@/interface";
 
 export default function Navbar() {
   const { lang } = useParams();
-  const [dict, setDict] = useState<any>();
+  const [dict, setDict] = useState<Dict | undefined>();
 
   useEffect(() => {
     let fontLink: HTMLLinkElement | null = null;
@@ -63,7 +65,7 @@ export default function Navbar() {
             />
           </Link>
         </figure>
-        <SearchBar searchHere={dict?.search_here} />
+        <SearchBar searchHere={dict?.search_here || ""} />
         <div className="hidden md:flex items-center space-x-4 gap-4">
           <LanguageSelect />
           <Theme />
@@ -73,7 +75,9 @@ export default function Navbar() {
         className="w-full h-screen pt-20"
         style={{ fontFamily: dict?.font.family }}
       >
-        <Outlet />
+        <NuqsAdapter>
+          <Outlet context={{ dict }} />
+        </NuqsAdapter>
       </div>
     </>
   );

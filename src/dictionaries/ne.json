@@ -1,4 +1,6 @@
 {
+  "chapter": "अध्याय",
+  "search_here": "यहाँ खोजें",
   "font": {
     "url": "https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@100..900&display=swap",
     "family": "\"Noto Sans Devanagari\", sans-serif"

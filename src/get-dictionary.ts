@@ -26,10 +26,5 @@ const dictionaries = {
   ur: () => import("./dictionaries/ur.json").then((module) => module.default),
 };
 
-export const getDictionary = async (locale: Locale["code"]) => {
-  // dictionaries[locale]?.() ?? dictionaries.hi();
-  const newDict = dictionaries[locale]?.();
-  if (newDict) return newDict;
-  console.warn(`Locale '${locale}' dict couldn't be used!`);
-  return dictionaries.hi();
-};
+export const getDictionary = async (locale: Locale["code"]) =>
+  dictionaries[locale]?.() ?? dictionaries.hi();

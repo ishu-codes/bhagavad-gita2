@@ -11,6 +11,33 @@ type Props = {
   to?: To;
 };
 
+function InnerContent(props: {
+  numbering: string;
+  title: string;
+  subtitle?: string;
+}) {
+  if (props.subtitle)
+    return (
+      <>
+        <p className="w-16 md:w-20 text-center text-[2rem]">
+          {props.numbering}
+        </p>
+        <div className="w-full flex-grow flex flex-col items-start text-left">
+          <h3 className="w-full text-xl font-semibold">{props.title}</h3>
+          <p className="w-full text-sm font-normal text-muted-foreground">
+            {props.subtitle}
+          </p>
+        </div>
+      </>
+    );
+  return (
+    <>
+      <p className="w-20 md:w-32 text-center text-2xl">{props.numbering}</p>
+      <h3 className="w-full text-left text-lg font-medium">{props.title}</h3>
+    </>
+  );
+}
+
 export default function ChapterName(props: Props) {
   return props.as === "btn" ? (
     <Button
@@ -20,13 +47,11 @@ export default function ChapterName(props: Props) {
       }`}
       onClick={props.handleClick}
     >
-      <p className="w-16 md:w-20 text-center text-[2rem]">{props.numbering}</p>
-      <div className="w-full flex-grow flex flex-col items-start text-left">
-        <h3 className="w-full text-xl font-semibold">{props.title}</h3>
-        <p className="w-full text-sm font-normal text-muted-foreground">
-          {props.subtitle}
-        </p>
-      </div>
+      <InnerContent
+        numbering={props.numbering}
+        title={props.title}
+        subtitle={props.subtitle}
+      />
     </Button>
   ) : (
     <Link
@@ -35,8 +60,11 @@ export default function ChapterName(props: Props) {
         props.active ? "bg-active pointer-events-none" : ""
       }`}
     >
-      <p className="w-20 md:w-32 text-center text-2xl">{props.numbering}</p>
-      <h3 className="w-full text-lg font-medium">{props.title}</h3>
+      <InnerContent
+        numbering={props.numbering}
+        title={props.title}
+        subtitle={props.subtitle}
+      />
     </Link>
   );
 }

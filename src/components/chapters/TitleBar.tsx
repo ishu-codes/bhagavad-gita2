@@ -31,7 +31,7 @@ export default function TitleBar(
       >
         <LeftArrow className="w-full" />
       </button>
-      <h2 className="text-2xl font-semibold">{props.text}</h2>
+      <h2 className="text-2xl font-semibold text-center">{props.text}</h2>
       <h3
         className={`min-w-6 text-xl ${
           props.secondaryText ? "" : "opacity-0 -z-10"
