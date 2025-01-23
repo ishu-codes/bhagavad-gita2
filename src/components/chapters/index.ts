@@ -1,4 +1,5 @@
-import Chapter from "./Chapter";
 import Chapters from "./Chapters";
+import Chapter from "./Chapter";
+import Verses from "./Verses";
 
-export { Chapter, Chapters };
+export { Chapter, Chapters, Verses };

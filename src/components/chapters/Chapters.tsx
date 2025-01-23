@@ -3,9 +3,7 @@ import { useParams, useOutletContext } from "react-router-dom";
 import { useShallow } from "zustand/shallow";
 import { useCurrentChapterStore } from "@/stores";
 import { getChapters } from "@/data";
-import { getLocale } from "@/functions/chapter";
-// import { getDictionary } from "@/get-dictionary";
-import { ChapterOnlyInterface, Dict } from "@/interface";
+import { ChapterInterface, Dict } from "@/interface";
 import { getLangNum } from "@/functions/lang";
 import ChapterName from "./ChapterName";
 import TitleBar from "./TitleBar";
@@ -13,8 +11,7 @@ import Sections from "./Sections";
 
 export default function Chapters() {
   const { lang } = useParams();
-  const [chapters, setChapters] = useState<ChapterOnlyInterface[]>([]);
-  // const [dict, setDict] = useState<any>();
+  const [chapters, setChapters] = useState<ChapterInterface[]>([]);
   const { dict } = useOutletContext<{ dict: Dict }>();
 
   const [currentChId, setChId] = useCurrentChapterStore(
@@ -22,8 +19,7 @@ export default function Chapters() {
   );
 
   useEffect(() => {
-    // getDictionary(getLocale(lang)).then((res) => setDict(res));
-    getChapters(getLocale(lang)).then((res) => setChapters(res));
+    getChapters(lang).then((res) => setChapters(res));
   }, [lang]);
 
   return (

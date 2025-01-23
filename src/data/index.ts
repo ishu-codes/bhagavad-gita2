@@ -1,79 +1,138 @@
 import type { Locale } from "@/i18n-config";
 import {
   ChapterInterface,
-  ChapterOnlyInterface,
   GroupInterface,
-  PhraseInterface,
+  GroupWVerseInterface,
+  SectionInterface,
 } from "@/interface";
+import { getLocale, getScript } from "./langs";
 
-export async function getChapters(lang: Locale["code"]) {
-  return await import(`./data_${lang}.json`).then((module) =>
-    module.default.map(
-      ({ id, name, desc, verses_count }: ChapterOnlyInterface) => ({
-        id,
-        name,
-        desc,
-        verses_count,
-      })
-    )
-  );
-}
-export async function getChapter(chId: string, lang: Locale["code"]) {
-  return await import(`./data_${lang}.json`).then((module) =>
-    module.default.find((ch: ChapterInterface) => ch.id === chId)
-  );
-}
-
-// async function getPhrases(grpCode:string, script:string) {
-//   return await import (`./phrases_${script}.json`).then(module => module.default.map(ph => ph.group === grpCode))
-// }
-
-// export async function getGroups(chId:string, secId:string, lang: Locale['code']) {
-//   return await import(`./data_${lang}.json`).then((module) => {
-//     const chapter = module.default.find((ch: ChapterInterface) => ch.id === chId);
-//     return await chapter.sections[parseInt(secId)-1].groups.map(
-//       ({code, phrases}:{code:string, phrases:PhraseInterface[]}) => ({code, getPhrases(code, 'dev')}));
-//   })
-// }
-async function getPhrases(grpCode: string, script: string) {
-  const module = await import(`./phrases_${script}.json`);
-  return module.default.filter((ph: { group: string }) => ph.group === grpCode);
-}
-
-export async function getGroups(
-  chId: string,
-  secId: string,
-  lang: Locale["code"]
-): Promise<GroupInterface[]> {
-  const module = await import(`./data_${lang}.json`);
-  const chapter = module.default.find((ch: ChapterInterface) => ch.id === chId);
-
-  if (!chapter) {
-    throw new Error(`Chapter with id ${chId} not found.`);
+// Get Data
+async function getData(type: string, lang: Locale["code"] | string) {
+  try {
+    const module = await import(`./${lang}/${type}.json`);
+    return module.default;
+  } catch (error) {
+    console.error(
+      `Error fetching data for type "${type}" and language "${lang}":`,
+      error
+    );
+    throw new Error("Failed to load data.");
   }
+}
 
-  const sectionIndex = parseInt(secId, 10) - 1;
+// Get chapters
+export async function getChapters(language?: string) {
+  return getData("chapters", getLocale(language));
+}
 
-  if (!chapter.sections[sectionIndex]) {
-    throw new Error(`Section ${secId} not found in chapter ${chId}.`);
+// Get chapter
+export async function getChapter(chId: string, language?: string) {
+  const lang = getLocale(language);
+  try {
+    const [chapters, sections] = await Promise.all([
+      getData("chapters", lang),
+      getData("sections", lang),
+    ]);
+
+    const chapter = chapters.find((ch: ChapterInterface) => ch.id === chId);
+    const selectedSections = sections.filter(
+      (sec: SectionInterface) => sec.id.slice(0, 2) === chId
+    );
+
+    if (!chapter) {
+      throw new Error(`Chapter with ID "${chId}" not found.`);
+    }
+
+    return { ...chapter, sections: selectedSections };
+  } catch (error) {
+    console.error(
+      `Error fetching chapter with ID "${chId}" for language "${lang}":`,
+      error
+    );
+    throw new Error("Failed to fetch chapter.");
   }
+}
 
-  const section = chapter.sections[sectionIndex];
+// Get section
+export async function getSection(secId: string, language?: string) {
+  const lang: Locale["code"] = getLocale(language);
+  const script: string = getScript(lang);
 
-  const groups = await Promise.all(
-    section.groups.map(
-      async ({
-        code,
-        phrases,
-      }: {
-        code: string;
-        phrases: PhraseInterface[];
-      }) => {
-        const phrasesData = await getPhrases(code, "dev");
-        return { code, phrases: phrasesData };
-      }
-    )
-  );
+  try {
+    const [sections, groups, verses] = await Promise.all([
+      getData("sections", lang),
+      getData("groups", lang),
+      getData("verses", script),
+    ]);
 
-  return groups;
+    const section = sections.find((sec: SectionInterface) => sec.id === secId);
+    const selectedGroups: GroupWVerseInterface = groups
+      .filter((grp: GroupInterface) => grp.secId === secId)
+      .map((selGrp: GroupInterface) => ({
+        ...selGrp,
+        verses: verses[selGrp.id],
+      }));
+
+    if (!section) throw new Error(`Section with ID "${secId}" not found.`);
+
+    return { ...section, groups: selectedGroups };
+  } catch (error) {
+    console.error(
+      `Error fetching section with ID "${secId}" for language "${lang}":`,
+      error
+    );
+    throw new Error("Failed to fetch section.");
+  }
+}
+
+// Get section with group
+export async function getSectionAndGroup(grpId: string, language?: string) {
+  const lang: Locale["code"] = getLocale(language);
+  const script: string = getScript(lang);
+
+  try {
+    const [chapters, sections, groups, verses] = await Promise.all([
+      getData("chapters", lang),
+      getData("sections", lang),
+      getData("groups", lang),
+      getData("verses", script),
+    ]);
+
+    const group: GroupInterface = groups.find(
+      (grp: GroupInterface) => grp.id === grpId
+    );
+    if (!group) throw new Error(`Group with ID "${grpId}" not found.`);
+
+    const section = sections.find(
+      (sec: SectionInterface) => sec.id === group.secId
+    );
+    const selectedGroups: GroupWVerseInterface = groups
+      .filter((grp: GroupInterface) => grp.secId === group.secId)
+      .map((selGrp: GroupInterface) => ({
+        ...selGrp,
+        verses: verses[selGrp.id],
+      }));
+
+    if (!section)
+      throw new Error(`Section with ID "${group.secId}" not found.`);
+
+    const chapter: ChapterInterface = chapters.find(
+      (ch: ChapterInterface) => ch.id === section.id.slice(0, 2)
+    );
+    if (!chapter)
+      throw new Error(`Chapter with ID "${section.id.slice(0, 2)}" not found.`);
+
+    return {
+      chapter,
+      section: { ...section, groups: selectedGroups },
+      group: { ...group, verses: verses[group.id] },
+    };
+  } catch (error) {
+    console.error(
+      `Error fetching group with ID "${grpId}" for language "${lang}":`,
+      error
+    );
+    throw new Error("Failed to fetch section.");
+  }
 }

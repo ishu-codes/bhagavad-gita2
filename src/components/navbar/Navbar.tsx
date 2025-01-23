@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, Outlet, useParams } from "react-router-dom";
 import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
-import { getLocale } from "@/functions/chapter";
+import { getLocale } from "@/data/langs";
 import { getDictionary } from "@/get-dictionary";
 import LanguageSelect from "./LanguageSelect";
 import SearchBar from "./SearchBar";

@@ -1,41 +1,42 @@
-export type PhraseInterface = {
-  id: string;
-  title: string;
-  group: string;
-};
-
-export type GroupOnlyInterface = {
+type VerseInterface = {
   code: string;
+  phrases: string[];
+};
+
+export type GroupInterface = {
+  id: string;
   translation: string;
-  meanings: { [key: string]: string }[];
+  meanings: { [key: string]: string };
+  secId: string;
+};
+export type GroupWVerseInterface = GroupInterface & {
+  verses: VerseInterface[];
 };
 
-export type GroupInterface = GroupOnlyInterface & {
-  phrases: PhraseInterface[];
-};
-
-export type SectionOnlyInterface = {
+export type SectionInterface = {
+  id: string;
   title: string;
   range: string;
 };
 
-export type SectionInterface = SectionOnlyInterface & {
-  groups: GroupInterface[];
+export type SectionWGroupInterface = SectionInterface & {
+  groups: GroupWVerseInterface[];
 };
 
-export type ChapterOnlyInterface = {
+export type ChapterInterface = {
   id: string;
   name: string;
   desc: string;
-  verses_count: number;
+  versesCount: number;
 };
 
-export type ChapterInterface = ChapterOnlyInterface & {
+export type ChapterWSectionInterface = ChapterInterface & {
   sections: SectionInterface[];
 };
 
 export type Dict = {
   chapter: string;
+  verse: string;
   search_here: string;
   font: {
     url: string;

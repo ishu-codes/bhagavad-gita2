@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
-import { getLocale } from "@/functions/chapter";
-import { ChapterInterface } from "@/interface";
+// import { getLocale } from "@/functions/chapter";
+import { ChapterWSectionInterface } from "@/interface";
 import { useCurrentChapterStore } from "@/stores";
 import TitleBar from "./TitleBar";
 import { getLangNum } from "@/functions/lang";
@@ -17,11 +17,11 @@ export default function Sections({
   chapterLocale: string;
 }) {
   const { lang } = useParams();
-  const [chapter, setChapter] = useState<ChapterInterface>();
+  const [chapter, setChapter] = useState<ChapterWSectionInterface>();
   const chId = useCurrentChapterStore(useShallow((state) => state.chId));
 
   useEffect(() => {
-    getChapter(chId, getLocale(lang)).then((res) => setChapter(res));
+    getChapter(chId, lang).then((res) => setChapter(res));
   }, [chId, lang]);
   return (
     <>

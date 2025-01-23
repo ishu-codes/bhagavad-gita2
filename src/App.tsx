@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Chapter, Chapters, Home, Navbar } from "./components";
+import { Chapter, Chapters, Home, Navbar, Verses } from "./components";
 
 export default function App() {
   return (
@@ -11,7 +11,13 @@ export default function App() {
 
           <Route path="chapters">
             <Route index element={<Chapters />} />
-            <Route path=":chId" element={<Chapter />} />
+            <Route path=":chId">
+              <Route index element={<Chapter />} />
+              <Route path="verses">
+                <Route index element={<Navigate to="../" replace />} />
+                <Route path=":grpId" element={<Verses />} />
+              </Route>
+            </Route>
           </Route>
         </Route>
       </Routes>

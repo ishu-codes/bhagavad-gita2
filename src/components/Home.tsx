@@ -1,8 +1,11 @@
-import { Link, useParams } from "react-router-dom";
-import { sections, blogs, verse, verseIcons } from "../data/home";
-import { ForwardIcon } from "../icons/HomeIcons";
+import { Link, useOutletContext, useParams } from "react-router-dom";
+import { sections, blogs, verseGrp } from "@/data/home";
+import { ForwardIcon } from "@/icons/HomeIcons";
+import { Dict } from "@/interface";
+import Verse from "./Verse";
 
 export default function Home() {
+  const { dict } = useOutletContext<{ dict: Dict }>();
   const { lang } = useParams();
   return (
     <div className="w-full bg-background text-foreground flex flex-col md:flex-row pt-6">
@@ -59,35 +62,12 @@ export default function Home() {
       </div>
 
       {/* Verse Section */}
-
       <div className="w-1/2 flex flex-col items-center border-l-2 border-border pt-4">
-        <h1 className="text-2xl font-bold uppercase font-yatra">
-          Verse of the day
-        </h1>
-        <div className="w-full flex flex-col items-center px-32 py-4 space-y-6">
-          <div className="w-full text-center p-4 text-2xl rounded-x font-yatra">
-            {verse.verse.map((part, index) => (
-              <h2 key={index}>{part}</h2>
-            ))}
-          </div>
-          <p className="hidden md:block w-full text-center text-secondary-foreground text-[1.4rem] font-medium px-4 leading-10">
-            {verse.meaning}
-            {/* {dictionary["verse_meaning"]} */}
-          </p>
-          <div className="hidden md:flex w-full justify-evenly">
-            {verseIcons.map((icon, index) => (
-              // <Button
-              <button
-                key={index}
-                // variant={"ghost"}
-                className="h-auto p-1 md:p-2 rounded-full hover:bg-accent"
-              >
-                <icon.icon className="p-2" />
-              </button>
-              // </Button>
-            ))}
-          </div>
-        </div>
+        <Verse
+          title="Verse of the Day"
+          verseGrp={verseGrp}
+          numerals={dict?.numerals}
+        />
       </div>
     </div>
   );
