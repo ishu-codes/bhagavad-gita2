@@ -56,7 +56,7 @@ export default function Verse(props: Props) {
             </div>
           ))}
         </div>
-        <p className="hidden md:block w-full text-center text-secondary-foreground text-[1.4rem] font-medium px-4 leading-10">
+        <p className="hidden md:block w-full text-center text-balance text-secondary-foreground text-[1.4rem] font-medium px-4 leading-10">
           {props.verseGrp?.translation}
           {/* {dictionary["verse_meaning"]} */}
         </p>
